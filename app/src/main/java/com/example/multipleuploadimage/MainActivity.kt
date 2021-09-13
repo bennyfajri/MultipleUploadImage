@@ -51,8 +51,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding                                         = DataBindingUtil.setContentView(this, R.layout.activity_main)
-        fileCompressor                                  = FileCompressor(this)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        fileCompressor = FileCompressor(this)
 
         binding.imageView.setOnClickListener { selectImage() }
         initAdapter()
@@ -139,7 +139,7 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         fileImage = createFile()
         val uri = if(Build.VERSION.SDK_INT >= 24){
-            FileProvider.getUriForFile(this, "com.gunawan.multipleimages.fileprovider",
+            FileProvider.getUriForFile(this, "${BuildConfig.APPLICATION_ID}.provider",
                 fileImage)
         } else {
             Uri.fromFile(fileImage)
