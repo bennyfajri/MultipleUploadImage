@@ -46,7 +46,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dialog: AlertDialog
     private var listImage: MutableList<File> = ArrayList()
     private var selectedSelectImage: Int = 0
-//    private val multipleImagesViewModel by viewModel<MultipleImagesViewModel>()
+
+    //    private val multipleImagesViewModel by viewModel<MultipleImagesViewModel>()
     private val listSelectImage = arrayOf("Take Photo", "Choose from Gallery")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,10 +63,12 @@ class MainActivity : AppCompatActivity() {
         addImageAdapter = AddImageAdapter(listImage)
         binding.rvImage.apply {
             setHasFixedSize(true)
-            layoutManager = LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(this@MainActivity, LinearLayoutManager.HORIZONTAL, false)
             adapter = addImageAdapter
 
-            addImageAdapter.setOnCustomClickListener(object : AddImageAdapter.OnCustomClickListener {
+            addImageAdapter.setOnCustomClickListener(object :
+                AddImageAdapter.OnCustomClickListener {
                 override fun onDeleteClicked(position: Int) {
                     listImage.removeAt(position)
                     addImageAdapter.notifyDataSetChanged()
@@ -82,8 +85,7 @@ class MainActivity : AppCompatActivity() {
                     selectedSelectImage = 0
                     if (checkPersmission()) {
                         takePhoto()
-                    }
-                    else {
+                    } else {
                         requestPermission()
                     }
                 }
@@ -91,8 +93,7 @@ class MainActivity : AppCompatActivity() {
                     selectedSelectImage = 1
                     if (checkPersmission()) {
                         openGallery()
-                    }
-                    else {
+                    } else {
                         requestPermission()
                     }
                 }
@@ -103,26 +104,35 @@ class MainActivity : AppCompatActivity() {
 
     private fun checkPersmission(): Boolean {
         return (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) ==
-                PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(this,
+                PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            this,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
-        ) == PackageManager.PERMISSION_GRANTED  && ContextCompat.checkSelfPermission(this,
+        ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+            this,
             Manifest.permission.READ_EXTERNAL_STORAGE
         ) == PackageManager.PERMISSION_GRANTED)
     }
 
     private fun requestPermission() {
-        ActivityCompat.requestPermissions(this, arrayOf(
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        ), PERMISSION_REQUEST_CODE)
+        ActivityCompat.requestPermissions(
+            this, arrayOf(
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ), PERMISSION_REQUEST_CODE
+        )
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED
+            ) {
                 if (selectedSelectImage == 0) {
                     takePhoto()
                 } else {
@@ -138,9 +148,11 @@ class MainActivity : AppCompatActivity() {
     private fun takePhoto() {
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         fileImage = createFile()
-        val uri = if(Build.VERSION.SDK_INT >= 24){
-            FileProvider.getUriForFile(this, "${BuildConfig.APPLICATION_ID}.provider",
-                fileImage)
+        val uri = if (Build.VERSION.SDK_INT >= 24) {
+            FileProvider.getUriForFile(
+                this, "${BuildConfig.APPLICATION_ID}.provider",
+                fileImage
+            )
         } else {
             Uri.fromFile(fileImage)
         }
@@ -148,7 +160,7 @@ class MainActivity : AppCompatActivity() {
         startActivityForResult(intent, REQUEST_TAKE_PHOTO)
     }
 
-    private fun openGallery(){
+    private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
         startActivityForResult(intent, REQUEST_OPEN_GALLERY)
@@ -191,7 +203,12 @@ class MainActivity : AppCompatActivity() {
         } else if (requestCode == REQUEST_OPEN_GALLERY) {
             if (resultCode == Activity.RESULT_OK) {
                 val bitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    ImageDecoder.decodeBitmap(ImageDecoder.createSource(this.contentResolver, data!!.data!!))
+                    ImageDecoder.decodeBitmap(
+                        ImageDecoder.createSource(
+                            this.contentResolver,
+                            data!!.data!!
+                        )
+                    )
                 } else {
                     MediaStore.Images.Media.getBitmap(this.contentResolver, data!!.data!!)
                 }
